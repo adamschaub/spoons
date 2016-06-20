@@ -1,42 +1,42 @@
 <?php
 
-function logSMS($message, $response, $number) {
+function logSMS($connection, $message, $response, $number) {
   mysqli_query($connection, 'INSERT INTO texts (message, response, phone_number) VALUES ("' . mysqli_real_escape_string($connection, $message) . '", "' . mysqli_real_escape_string($connection, $response) . '", "' . mysqli_real_escape_string($connection, $number) . '")');
 }
 
-function getNumTotalSpooners() {
+function getNumTotalSpooners($connection) {
   $result = mysqli_query($connection, "SELECT id FROM spooners");
   return mysqli_num_rows($result);
 }
 
-function getNumActiveSpooners() {
+function getNumActiveSpooners($connection) {
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0");
   return mysqli_num_rows($result);
 }
 
-function getNumActiveCamperSpooners() {
+function getNumActiveCamperSpooners($connection) {
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0 AND staff = 0");
   return mysqli_num_rows($result);
 }
 
-function getNumActiveStaffSpooners() {
+function getNumActiveStaffSpooners($connection) {
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0 AND staff = 1");
   return mysqli_num_rows($result);
 }
 
-function getLowestOrderNum() {
+function getLowestOrderNum($connection) {
   $result = mysqli_query($connection, "SELECT order_num FROM spooners WHERE spooned = 0 ORDER BY order_num ASC LIMIT 1");
   $spooner = mysqli_fetch_array($result);
   return $spooner['order_num'];
 }
 
-function getHighestOrderNum() {
+function getHighestOrderNum($connection) {
   $result = mysqli_query($connection, "SELECT order_num FROM spooners WHERE spooned = 0 ORDER BY order_num DESC LIMIT 1");
   $spooner = mysqli_fetch_array($result);
   return $spooner['order_num'];
 }
 
-function getCamperIDs(){
+function getCamperIDs($connection){
   $camper_ids = array();
 
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0 AND staff = 0 ORDER BY id");
@@ -46,7 +46,7 @@ function getCamperIDs(){
   return $camper_ids;
 }
 
-function getStaffIDs(){
+function getStaffIDs($connection){
   $staff_ids = array();
 
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0 AND staff = 1 ORDER BY id");
@@ -56,7 +56,7 @@ function getStaffIDs(){
   return $staff_ids;
 }
 
-function shuffleSpooners() {
+function shuffleSpooners($connection) {
   $camper_ids = getCamperIDs();
   $staff_ids = getStaffIDs();
 
@@ -96,7 +96,7 @@ function shuffleSpooners() {
   }
 }
 
-function getIDByLooseName($subject) {
+function getIDByLooseName($connection, $subject) {
   $subject = trim($subject);
   $subject = strtolower($subject);
   $subject = str_replace(".", "", $subject);  // remove periods
@@ -138,7 +138,7 @@ function getIDByLooseName($subject) {
   return "none";
 }
 
-function getNameByID($id) {
+function getNameByID($connection, $id) {
   if($id) {
     $result = mysqli_query($connection, "SELECT first, last FROM spooners WHERE id = " . $id) or die(mysqli_error($connection));
     if(mysqli_num_rows($result) == 1) {
@@ -152,13 +152,13 @@ function getNameByID($id) {
   }
 }
 
-function getFirstNameByID($id) {
+function getFirstNameByID($connection, $id) {
   $result = mysqli_query($connection, "SELECT first FROM spooners WHERE id = " . $id);
   $spooner = mysqli_fetch_array($result);
   return $spooner['first'];
 }
 
-function getTargetByID($id) {
+function getTargetByID($connection, $id) {
   $result = mysqli_query($connection, "SELECT order_num FROM spooners WHERE id = " . $id);
   $spooner = mysqli_fetch_array($result);
   if($spooner['order_num'] == getHighestOrderNum()) {    // if last person in the list
@@ -172,7 +172,7 @@ function getTargetByID($id) {
   }
 }
 
-function getReverseTargetByID($id) {    // aka get the person above the passed in person
+function getReverseTargetByID($connection, $id) {    // aka get the person above the passed in person
   $result = mysqli_query($connection, "SELECT order_num FROM spooners WHERE id = " . $id);
   $spooner = mysqli_fetch_array($result);
   if($spooner['order_num'] == getLowestOrderNum()) {    // if first person in the list
@@ -186,28 +186,28 @@ function getReverseTargetByID($id) {    // aka get the person above the passed i
   }
 }
 
-function checkSpoonedByID($id) {
+function checkSpoonedByID($connection, $id) {
   $result = mysqli_query($connection, "SELECT spooned FROM spooners WHERE id = " . $id);
   $spooner = mysqli_fetch_array($result);
   return $spooner['spooned'];
 }
 
-function spoonByID($id) {
+function spoonByID($connection, $id) {
   mysqli_query($connection, 'SET time_zone = "' . $timezone_number . '"');
   mysqli_query($connection, "UPDATE spooners SET spooned_by = " . getReverseTargetByID($id) . ", time_spooned = NOW(), spooned = 1, order_num = -1 WHERE id = " . $id);
 }
 
-function reviveByID($id) {
+function reviveByID($connection, $id) {
   mysqli_query($connection, "UPDATE spooners SET spooned = 0, order_num = " . (getHighestOrderNum() + 1) . " WHERE id = " . $id);
 }
 
-function getSpoonedByIDByID($id) {
+function getSpoonedByIDByID($connection, $id) {
   $result = mysqli_query($connection, "SELECT spooned_by FROM spooners WHERE id = " . $id);
   $spooner = mysqli_fetch_array($result);
   return $spooner['spooned_by'];
 }
 
-function getTimeSpoonedByID($id) {
+function getTimeSpoonedByID($connection, $id) {
   $result = mysqli_query($connection, "SELECT time_spooned FROM spooners WHERE id = " . $id);
   $spooner = mysqli_fetch_array($result);
   return $spooner['time_spooned'];

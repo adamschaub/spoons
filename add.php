@@ -4,7 +4,7 @@ include('db_connect.php');
 include('functions.php');
 
 if($_POST) {
-  $order = getHighestOrderNum() + 1;
+  $order = getHighestOrderNum($connection) + 1;
   for($i = 0; $i < $_POST['num']; $i++) {
     if($_POST['first-' . $i] != "") {
       if(!$_POST['staff-' . $i]) $_POST['staff-' . $i] = 0;
