@@ -1,27 +1,27 @@
 <?php
 
 function logSMS($message, $response, $number) {
-  mysqli_query($connection, 'INSERT INTO texts (message, response, phone_number) VALUES ("' . mysql_real_escape_string($message) . '", "' . mysql_real_escape_string($response) . '", "' . mysql_real_escape_string($number) . '")');
+  mysqli_query($connection, 'INSERT INTO texts (message, response, phone_number) VALUES ("' . mysqli_real_escape_string($connection, $message) . '", "' . mysqli_real_escape_string($connection, $response) . '", "' . mysqli_real_escape_string($connection, $number) . '")');
 }
 
 function getNumTotalSpooners() {
   $result = mysqli_query($connection, "SELECT id FROM spooners");
-  return mysql_num_rows($result);
+  return mysqli_num_rows($result);
 }
 
 function getNumActiveSpooners() {
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0");
-  return mysql_num_rows($result);
+  return mysqli_num_rows($result);
 }
 
 function getNumActiveCamperSpooners() {
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0 AND staff = 0");
-  return mysql_num_rows($result);
+  return mysqli_num_rows($result);
 }
 
 function getNumActiveStaffSpooners() {
   $result = mysqli_query($connection, "SELECT id FROM spooners WHERE spooned = 0 AND staff = 1");
-  return mysql_num_rows($result);
+  return mysqli_num_rows($result);
 }
 
 function getLowestOrderNum() {
@@ -104,10 +104,10 @@ function getIDByLooseName($subject) {
   // subject only contains one word
   if(substr_count($subject, " ") == 0) {    
     $result = mysqli_query($connection, 'SELECT id FROM spooners WHERE LOWER(first) = "' . $subject . '"');
-    if(mysql_num_rows($result) == 1) {
+    if(mysqli_num_rows($result) == 1) {
       $spooner = mysqli_fetch_array($result);
       return $spooner['id'];   // MATCH!
-    } else if(mysql_num_rows($result) > 1) {
+    } else if(mysqli_num_rows($result) > 1) {
       return "multiple";       // more than one found
     }
   } else if(substr_count($subject, " ") == 1) {       // one space, let's assume first space last
@@ -115,13 +115,13 @@ function getIDByLooseName($subject) {
     $last = substr($subject, strpos($subject, " ") + 1);
     if(strlen($last) == 1) {   // last initial
       $result = mysqli_query($connection, 'SELECT id FROM spooners WHERE LOWER(first) = "' . $first . '" AND LOWER(SUBSTRING(last, 1, 1)) = "' . $last . '"');
-      if(mysql_num_rows($result) > 0) {
+      if(mysqli_num_rows($result) > 0) {
         $spooner = mysqli_fetch_array($result);
         return $spooner['id'];   // MATCH!
       }
     } else {    // full last name
       $result = mysqli_query($connection, 'SELECT id FROM spooners WHERE LOWER(first) = "' . $first . '" AND LOWER(last) = "' . $last . '"');
-      if(mysql_num_rows($result) > 0) {
+      if(mysqli_num_rows($result) > 0) {
         $spooner = mysqli_fetch_array($result);
         return $spooner['id'];   // MATCH!
       }
@@ -129,7 +129,7 @@ function getIDByLooseName($subject) {
     
     // still not found, take whole subject and compare to concatenated first + last in database
     $result = mysqli_query($connection, 'SELECT id FROM spooners WHERE LOWER(CONCAT_WS(" ", first, last)) = "' . $subject . '"');
-    if(mysql_num_rows($result) > 0) {
+    if(mysqli_num_rows($result) > 0) {
       $spooner = mysqli_fetch_array($result);
       return $spooner['id'];
     }
@@ -141,7 +141,7 @@ function getIDByLooseName($subject) {
 function getNameByID($id) {
   if($id) {
     $result = mysqli_query($connection, "SELECT first, last FROM spooners WHERE id = " . $id) or die(mysqli_error($connection));
-    if(mysql_num_rows($result) == 1) {
+    if(mysqli_num_rows($result) == 1) {
       $spooner = mysqli_fetch_array($result);
       $name = $spooner['first'];
       if($spooner['last']) $name .= ' ' . $spooner['last'];
