@@ -1,6 +1,5 @@
 <?php
-mysql_connect($db_host, $db_user, $db_pass);
-mysql_select_db($db_name);
+$connection = mysqli_connect($db_host, $db_user, $db_pass, $db_name);
 
-mysql_query('SET time_zone = "' . $timezone_number . '"');
+mysqli_query($connection, 'SET time_zone = "' . $timezone_number . '"');
 ?>
