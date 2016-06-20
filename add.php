@@ -8,7 +8,7 @@ if($_POST) {
   for($i = 0; $i < $_POST['num']; $i++) {
     if($_POST['first-' . $i] != "") {
       if(!$_POST['staff-' . $i]) $_POST['staff-' . $i] = 0;
-      mysql_query('INSERT INTO spooners (first, last, order_num, staff) VALUES ("' . mysql_real_escape_string($_POST['first-' . $i]) . '", "' . mysql_real_escape_string($_POST['last-' . $i]) . '", ' . $order . ', ' . mysql_real_escape_string($_POST['staff-' . $i]) . ')') or die(mysql_error());
+      mysqli_query($connection, 'INSERT INTO spooners (first, last, order_num, staff) VALUES ("' . mysqli_real_escape_string($connection, $_POST['first-' . $i]) . '", "' . mysqli_real_escape_string($connection, $_POST['last-' . $i]) . '", ' . $order . ', ' . mysqli_real_escape_string($connection, $_POST['staff-' . $i]) . ')') or die(mysqli_error($connection));
       $order++;
     }
   }
