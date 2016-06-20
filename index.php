@@ -3,7 +3,7 @@ include('init.php');
 
 // needs to be at top so we can redirect to prevent double-shuffling or double-clearing
 if(isset($_GET['shuffle']) && isset($_GET['confirmed'])) {
-  shuffleSpooners();
+  shuffleSpooners($connection);
   header("Location:" . $site_url . "/shuffle/done");
 } else if(isset($_GET['clear']) && isset($_GET['confirmed'])) {
   mysqli_query($connection, "TRUNCATE spooners");
@@ -103,11 +103,11 @@ h2, h4{
 
 /*********** SPOONING **********/
 if(isset($_GET['spoon'])) {
-  spoonByID($_GET['spoon']);
+  spoonByID($connection, $_GET['spoon']);
 ?>
 <div class="alert">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <h4><strong><?php echo getNameByID($_GET['spoon']) ?></strong> has been spooned! <?php echo getNameByID(getSpoonedByIDByID($_GET['spoon'])) ?></strong>'s new target is <?php echo getNameByID(getTargetByID(getSpoonedByIDByID($_GET['spoon']))) ?>.</h4>
+  <h4><strong><?php echo getNameByID($connection, $_GET['spoon']) ?></strong> has been spooned! <?php echo getNameByID($connection, getSpoonedByIDByID($connection, $_GET['spoon'])) ?></strong>'s new target is <?php echo getNameByID($connection, getTargetByID($connection, getSpoonedByIDByID($connection, $_GET['spoon']))) ?>.</h4>
 </div>
 <?php
 }
