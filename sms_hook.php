@@ -28,8 +28,8 @@ if($subject && $subject_id == "multiple") {
 } else if($subject && $subject_id == "none") {
   $response = "There were no spooners by the name " . $subject . " found in the system. Sorry (but not really).";
 } else if($subject && strcasecmp($command, "spoon") == 0) {
-  spoonByID($subject_id);
-  $response = getNameByID($subject_id) . ' has been spooned! ' . getNameByID($connection, getSpoonedByIDByID($connection, $subject_id)) . '\'s new target is ' . getNameByID($connection, getTargetByID($connection, getSpoonedByIDByID($connection, $subject_id))) . '.';
+  spoonByID($connection, $subject_id);
+  $response = getNameByID($connection, $subject_id) . ' has been spooned! ' . getNameByID($connection, getSpoonedByIDByID($connection, $subject_id)) . '\'s new target is ' . getNameByID($connection, getTargetByID($connection, getSpoonedByIDByID($connection, $subject_id))) . '.';
 } else if($subject && strcasecmp($command, "status") == 0) {
   if(checkSpoonedByID($connection, $subject_id)) {
     $response = getNameByID($connection, $subject_id) . ' was spooned by ' . getNameByID($connection, getSpoonedByIDByID($connection, $subject_id)) . ' on ' . date('l', strtotime(getTimeSpoonedByID($connection, $subject_id))) . ' at ' . date('g:i A', strtotime(getTimeSpoonedByID($connection, $subject_id))) . '.';

@@ -113,11 +113,11 @@ if(isset($_GET['spoon'])) {
 }
 
 if(isset($_GET['revive'])) {
-  reviveByID($_GET['revive']);
+  reviveByID($connection, $_GET['revive']);
 ?>
 <div class="alert">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <h4><strong><?php echo getNameByID($_GET['revive']) ?></strong> has been revived, but note that he or she has been added to the end of the list.</h4>
+  <h4><strong><?php echo getNameByID($connection, $_GET['revive']) ?></strong> has been revived, but note that he or she has been added to the end of the list.</h4>
   <p>It's recommended to drag the revived spooner below a staff member so that you don't have to tell a camper that his or her target has changed for no reason.</p>
 </div>
 <?php 
@@ -223,7 +223,7 @@ $result = mysqli_query($connection, "SELECT id, first, last, staff FROM spooners
         <td>' . $spooner['first'] . '</td>
         <td>' . $spooner['last'] . '</td>
         <td class="drag align-center"><i class="icon-list"></i></td>
-      <!--  <td><small>Targeting ' . getNameByID(getTargetByID($spooner['id'])) . ', targeted by ' . getNameByID(getReverseTargetByID($spooner['id'])) . '</small></td>  -->
+      <!--  <td><small>Targeting ' . getNameByID($connection, getTargetByID($connection, $spooner['id'])) . ', targeted by ' . getNameByID($connection, getReverseTargetByID($connection, $spooner['id'])) . '</small></td>  -->
       </tr>
   ';
   }
@@ -260,8 +260,8 @@ $result = mysqli_query($connection, "SELECT id, first, last, staff, spooned_by, 
     echo '">
         <td class="align-center" style="min-width:40px;"><a href="' . $site_url . '/revive/' . $spooner['id'] . '" class="btn hidden-phone" type="submit"><i class="icon-arrow-up"></i> Revive</a><a href="' . $site_url . '/revive/' . $spooner['id'] . '" class="btn visible-phone" style="padding-left:10px !important; width:40px !important;">  <i class="icon-arrow-up"></i></a></td>
         <td>' . $spooner['first'] . ' ' . $spooner['last'] . '</td>
-        <td class="hidden-phone"><small>Spooned by <strong>' . getNameByID($spooner['spooned_by']) . '</strong> on <strong>' . date('l', strtotime($spooner['time_spooned'])) . '</strong> at <strong>' . date('g:i A', strtotime($spooner['time_spooned'])) . '</strong>.</small></td>
-        <td class="visible-phone"><small>Spooned by <strong>' . getNameByID($spooner['spooned_by']) . '</strong></br> on <strong>' . date('l', strtotime($spooner['time_spooned'])) . '</strong> at <strong>' . date('g:i A', strtotime($spooner['time_spooned'])) . '</strong>.</small></td>
+        <td class="hidden-phone"><small>Spooned by <strong>' . getNameByID($connection, $spooner['spooned_by']) . '</strong> on <strong>' . date('l', strtotime($spooner['time_spooned'])) . '</strong> at <strong>' . date('g:i A', strtotime($spooner['time_spooned'])) . '</strong>.</small></td>
+        <td class="visible-phone"><small>Spooned by <strong>' . getNameByID($connection, $spooner['spooned_by']) . '</strong></br> on <strong>' . date('l', strtotime($spooner['time_spooned'])) . '</strong> at <strong>' . date('g:i A', strtotime($spooner['time_spooned'])) . '</strong>.</small></td>
 
       </tr>
   ';
