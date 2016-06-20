@@ -6,7 +6,7 @@ if(isset($_GET['shuffle']) && isset($_GET['confirmed'])) {
   shuffleSpooners();
   header("Location:" . $site_url . "/shuffle/done");
 } else if(isset($_GET['clear']) && isset($_GET['confirmed'])) {
-  mysql_query("TRUNCATE spooners");
+  mysqli_query($connection, "TRUNCATE spooners");
   header("Location:" . $site_url . "/clear/done");
 }
 
@@ -198,12 +198,12 @@ $(document).ready(function() {
 </script>
 
 <?php
-$result = mysql_query("SELECT id, first, last, staff FROM spooners WHERE spooned = 0 ORDER BY order_num") or die(mysql_error());
+$result = mysqli_query($connection, "SELECT id, first, last, staff FROM spooners WHERE spooned = 0 ORDER BY order_num") or die(mysqli_error($connection));
 ?>
 
-<h4>Active Spooners (<?php echo mysql_num_rows($result) ?>)</h4>
+<h4>Active Spooners (<?php echo mysqli_num_rows($result) ?>)</h4>
 
-<?php if(mysql_num_rows($result) > 0) { ?>
+<?php if(mysqli_num_rows($result) > 0) { ?>
 <table class="table table-active">
   <thead>
     <tr class="row">
@@ -215,7 +215,7 @@ $result = mysql_query("SELECT id, first, last, staff FROM spooners WHERE spooned
   </thead>
   <tbody>
 <?php
-  while($spooner = mysql_fetch_array($result)) {
+  while($spooner = mysqli_fetch_array($result)) {
     echo '    <tr id="' . $spooner['id'] . '" class="row';
     if($spooner['staff']) echo ' success'; // highlight staff with green row
     echo '">
@@ -237,12 +237,12 @@ $result = mysql_query("SELECT id, first, last, staff FROM spooners WHERE spooned
 <hr>
 
 <?php
-$result = mysql_query("SELECT id, first, last, staff, spooned_by, time_spooned FROM spooners WHERE spooned = 1 ORDER BY time_spooned DESC") or die(mysql_error());
+$result = mysqli_query($connection, "SELECT id, first, last, staff, spooned_by, time_spooned FROM spooners WHERE spooned = 1 ORDER BY time_spooned DESC") or die(mysqli_error($connection));
 ?>
 
-<h4>Dead Spooners (<?php echo mysql_num_rows($result) ?>)</h4>
+<h4>Dead Spooners (<?php echo mysqli_num_rows($result) ?>)</h4>
 
-<?php if(mysql_num_rows($result) > 0) { ?>
+<?php if(mysqli_num_rows($result) > 0) { ?>
 <table class="table table-inactive">
   <thead>
     <tr class="row">
@@ -254,7 +254,7 @@ $result = mysql_query("SELECT id, first, last, staff, spooned_by, time_spooned F
   </thead>
   <tbody>
 <?php
-  while($spooner = mysql_fetch_array($result)) {
+  while($spooner = mysqli_fetch_array($result)) {
     echo '        <tr id="' . $spooner['id'] . '" class="row';
     if($spooner['staff']) echo ' success'; // highlight staff with green row
     echo '">
